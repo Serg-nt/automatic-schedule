@@ -1,37 +1,38 @@
 import React from 'react';
 import {TableCell} from "@mui/material";
-import {User} from "../../interfaces/types";
 
 
 type Props = {
-    user: User;
-    day: string;
+    isSelectedPersonalWeekend: boolean;
+    isSelectedDefinedWeekend: boolean;
     onClick: () => void
 }
 
 export const TableCellUserDay = React.memo(({
-                                    user,
-                                    day,
-                                    onClick
-                                }: Props) => {
+                                                isSelectedPersonalWeekend,
+                                                isSelectedDefinedWeekend,
+                                                onClick
+                                            }: Props) => {
 
-    let backgroundColor = null;
 
-    // if(user.personalWeekends.includes(day)) {
-    //     backgroundColor = {bgcolor: 'secondary.main'}
-    // } else if(user.definedWeekends.includes(day)) {
-    //     backgroundColor = {bgcolor: 'info.main'}
-    // } else {
-    //     backgroundColor = {bgcolor: ''}
-    // }
+
+
+
+    const bc = isSelectedPersonalWeekend
+        ? 'primary.main'
+        : (isSelectedDefinedWeekend ? 'secondary.main' : 'info.main')
+
 
     return (
         <TableCell
             align="center"
-            sx={backgroundColor}
-            onClick={onClick}
+            sx={{bgcolor: bc}}
+            onClick={() => onClick()}
         >
-            {day}
+            {isSelectedPersonalWeekend
+                ? 'В*'
+                : (isSelectedDefinedWeekend ? 'B' : 'P')
+            }
         </TableCell>
     )
         ;

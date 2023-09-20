@@ -1,33 +1,52 @@
 import React from 'react';
-import {TableContainer, Paper, Table, TableBody, TableCell, TableHead, TableRow} from "@mui/material";
+import {createTheme, ThemeProvider} from "@mui/material/styles";
+import {IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import HeightIcon from '@mui/icons-material/Height';
 import {TableCellUserDay} from "./TableCellUserDay";
-import {useDispatch, useSelector} from "react-redux";
-import {AppRootStateType} from "../../app/store";
-import {Date} from "../../interfaces/types";
-import {usersActions} from "./users/users.reducer";
-import {createTheme, ThemeProvider} from '@mui/material/styles';
+import {User} from "../../interfaces/types";
 
-export const SheduleTable = () => {
+type ScheduleTableType = {
+    usersList: User[]
+    daysList: string[]
+    sortedUsersFullNameClick: () => void
+    changeUserDayCellClick: (userId: string, day: string, isPersonalWeekend: boolean, isDefinedWeekend: boolean) => void
+    removeUser: (id: string) => void
+}
+
+
+export const SheduleTable: React.FC<ScheduleTableType> = ({
+                                                             usersList,
+                                                             daysList,
+                                                              sortedUsersFullNameClick,
+                                                             changeUserDayCellClick,
+                                                             removeUser
+                                                         }) => {
 
     const theme = createTheme({
         palette: {
-            primary: {main: '#98FB98'},
-            secondary: {main: '#66CDAA'},
-            info: {main: '#B0E0E6'},
-    }});
-
-    const usersList = useSelector((state: AppRootStateType) => state.users)
-    const dispatch = useDispatch()
-
-    const daysList = Object.values(Date);
-
-    const onUserDayCellClick = (userId: string, day: string) => {
-        // if(usersList.some(user => user.id === userId & user.)) {
-        //     console.log(!usersList.some(user => user.id === userId), 'id add')
-        //     dispatch(usersActions.changeUsersDefinedWeekendsDays({id: userId, day}))
-        // }
-        dispatch(usersActions.addUsersDefinedWeekendsDays({id: userId, day}))
+            primary: {main: '#66CDAA'},
+            secondary: {main: '#98FB98'},
+            info: {main: '#c7e9ed'},
         }
+    });
+
+    const countMap: Record<string, number> = {
+        'mon': 0,
+        'tue': 0,
+        'wed': 0,
+        'thu': 0,
+        'fri': 0,
+        'sat': 0,
+        'sun': 0
+    } // todo проверить как написано, как правильно выносить в отдельную логику или нет
+
+    usersList.forEach(user => {
+        const weekendsOfUser = [...user.definedWeekends, ...user.personalWeekends]
+        weekendsOfUser.forEach(item => {
+            countMap[item] = (countMap[item] || 0) + 1;
+        });
+    });
 
     return (
         <>
@@ -36,7 +55,12 @@ export const SheduleTable = () => {
                     <Table sx={{minWidth: 650}} aria-label="simple table">
                         <TableHead>
                             <TableRow sx={{bgcolor: 'primary.main'}}>
-                                <TableCell>Представители</TableCell>
+                                <TableCell sx={{minWidth: 250}}>
+                                    <IconButton onClick={sortedUsersFullNameClick} size="small">
+                                        <HeightIcon/>
+                                    </IconButton>
+                                    Представители
+                                </TableCell>
                                 <TableCell></TableCell>
                                 {daysList.map((day, index) =>
                                     <TableCell
@@ -46,41 +70,45 @@ export const SheduleTable = () => {
                                     >{day.toUpperCase()}</TableCell>)}
                             </TableRow>
                             <TableRow>
-                                <TableCell>Предст. в день</TableCell>
-                                <TableCell>Смен</TableCell>
+                                <TableCell>Сегодня работают:</TableCell>
+                                <TableCell></TableCell>
                                 {daysList.map((day, index) => <TableCell align="center" key={day}>
-
-                                    {/*????*/}
-
-                                    {/*{usersList.reduce((acc, user) => {*/}
-                                    {/*    if ([...user.personalWeekends, ...user.definedWeekends].includes(day)) acc++*/}
-                                    {/*    return acc;*/}
-                                    {/*}, 0)}*/}
-
-
+                                    {usersList.length - countMap[day]}
                                 </TableCell>)}
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {usersList.map((user) => (
+                            {usersList.map((user: User) => (
                                 <TableRow
                                     key={user._id}
                                     sx={{'&:last-child td, &:last-child th': {border: 0}}}
                                 >
                                     <TableCell component="th" scope="row">
+                                        <IconButton onClick={() => removeUser(user._id)} size="small">
+                                            <CloseIcon/>
+                                        </IconButton>
                                         {user.fullName}
                                     </TableCell>
-                                    <TableCell component="th" scope="row">
-                                        {/*{[...user.personalWeekends, ...user.definedWeekends].length}*/}
+                                    <TableCell component="th" scope="row" sx={{width: 50, textAlign : "center"}}>
+                                        {7 - [...user.personalWeekends, ...user.definedWeekends].length}
                                     </TableCell>
 
-                                    {daysList.map(day =>
+                                    {daysList.map(day => {
+                                            const isPersonalWeekend = user.personalWeekends.includes(day);
+                                            const isDefinedWeekend = user.definedWeekends.includes(day);
+                                            return (
                                         <TableCellUserDay
                                             key={day}
-                                            day={day}
-                                            user={user}
-                                            onClick={() => onUserDayCellClick(user._id, day)}
-                                        ></TableCellUserDay>)}
+                                            onClick={() => changeUserDayCellClick(
+                                                user._id,
+                                                day,
+                                                isPersonalWeekend,
+                                                isDefinedWeekend
+                                            )}
+                                            isSelectedPersonalWeekend={isPersonalWeekend}
+                                            isSelectedDefinedWeekend={isDefinedWeekend}
+                                        />)}
+                                        )}
 
                                 </TableRow>
                             ))}
@@ -91,3 +119,4 @@ export const SheduleTable = () => {
         </>
     );
 };
+

@@ -1,4 +1,4 @@
-import React, {ChangeEvent, useState} from 'react';
+import React, {ChangeEvent, KeyboardEventHandler, useState} from 'react';
 import {AddBox} from "@mui/icons-material";
 import {IconButton, TextField} from "@mui/material";
 
@@ -18,16 +18,23 @@ export const AddUser = (props: PropsType) => {
         setTitle(e.currentTarget.value);
     };
 
+    const onKeyPressHandler = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === 'Enter') {
+            addItemHandler();
+        }
+    };
+
     return (
         <div>
-            <TextField sx={{ margin: 1, width: '350px', height: '70px'}}
-                variant="outlined"
-                value={title}
-                onChange={onChangeHandler}
-                label="Введите фамилию имя"
+            <TextField sx={{margin: 1, width: '350px', height: '70px'}}
+                       variant="outlined"
+                       value={title}
+                       onChange={onChangeHandler}
+                       onKeyPress={onKeyPressHandler}
+                       label="Добавить представителя"
             />
-            <IconButton color="primary" onClick={addItemHandler} sx={{ marginTop: 2, alignItems: 'center'}}>
-                <AddBox />
+            <IconButton color="primary" onClick={addItemHandler} sx={{marginTop: 2, alignItems: 'center'}}>
+                <AddBox/>
             </IconButton>
         </div>
     );
