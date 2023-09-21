@@ -33,7 +33,7 @@ export const SheduleTableContainer: React.FC<PropsType> = ({changeDaysOn}) => {
                 ? [...user.personalWeekends, day]
                 : user.personalWeekends.filter(elem => elem !== day.toString())
 
-            if (isDefinedWeekend) { // todo пройти конфликт обновления в базе данных, чтобы по порядку удалялись обычные выходные и только потом добавлялись важные
+            if (isDefinedWeekend) {
 
                 const newArrDefinedWeekends = user.definedWeekends.filter(elem => elem !== day.toString())
                 dispatch(usersThunks.setWeekend({user, newArrPersonalWeekends, newArrDefinedWeekends})) // ??? не проще ли сделать одну функцию универсальную
@@ -56,7 +56,7 @@ export const SheduleTableContainer: React.FC<PropsType> = ({changeDaysOn}) => {
 
     }
 
-    const sortedUsersFullNameClick = () => {  // todo правильно ли написано или по другому проще сделать есть вариант
+    const sortedUsersFullNameClick = () => {
         sort
             ? dispatch(usersThunks.fetchSortedUsers(1))
             : dispatch(usersThunks.fetchSortedUsers(-1))

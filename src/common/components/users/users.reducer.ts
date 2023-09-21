@@ -1,5 +1,5 @@
 import {User} from "../../../interfaces/types";
-import {createSlice, current, PayloadAction} from "@reduxjs/toolkit";
+import {createSlice} from "@reduxjs/toolkit";
 import {usersApi} from "../users/users.api";
 import {createAppAsyncThunk} from "../../utils/create-app-async-thunk";
 
@@ -32,7 +32,7 @@ const addUser = createAppAsyncThunk<User, string>(
 const removeUser = createAppAsyncThunk<string, string>(
     "users/removeUser",
     async (_id) => {
-        const res = await usersApi.removeUser(_id)
+        await usersApi.removeUser(_id)
         return _id
     },
 )
@@ -150,5 +150,6 @@ const slice = createSlice({
 });
 
 export const usersReducer = slice.reducer;
-export const usersActions = slice.actions;
+export const usersActions = {addUser, removeUser, setPersonalWeekend, setDefinedWeekend, setWeekend};
+// export const usersActions = slice.actions;
 export const usersThunks = { fetchUsers, fetchSortedUsers, addUser, removeUser, setPersonalWeekend, setDefinedWeekend, setWeekend }
