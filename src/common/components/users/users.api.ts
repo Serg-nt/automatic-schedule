@@ -5,9 +5,6 @@ export const usersApi = {
     getUsers() {
         return instance.get<User[]>("users");
     },
-    getSortedUsers(sort: number) {
-        return instance.get(`users/sort/${sort}`)
-    },
     createUser(fullName: string) {
         return instance.post("users", {fullName: fullName});
     },

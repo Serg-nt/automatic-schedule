@@ -2,14 +2,12 @@ import React from 'react';
 import {createTheme, ThemeProvider} from "@mui/material/styles";
 import {IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import HeightIcon from '@mui/icons-material/Height';
 import {TableCellUserDay} from "./TableCellUserDay";
 import {User} from "../../interfaces/types";
 
 type ScheduleTableType = {
     usersList: User[]
     daysList: string[]
-    sortedUsersFullNameClick: () => void
     changeUserDayCellClick: (userId: string, day: string, isPersonalWeekend: boolean, isDefinedWeekend: boolean) => void
     removeUser: (id: string) => void
 }
@@ -18,7 +16,6 @@ type ScheduleTableType = {
 export const SheduleTable: React.FC<ScheduleTableType> = ({
                                                              usersList,
                                                              daysList,
-                                                              sortedUsersFullNameClick,
                                                              changeUserDayCellClick,
                                                              removeUser
                                                          }) => {
@@ -39,7 +36,7 @@ export const SheduleTable: React.FC<ScheduleTableType> = ({
         'fri': 0,
         'sat': 0,
         'sun': 0
-    } // todo проверить как написано, как правильно выносить в отдельную логику или нет
+    }
 
     usersList.forEach(user => {
         const weekendsOfUser = [...user.definedWeekends, ...user.personalWeekends]
@@ -56,9 +53,6 @@ export const SheduleTable: React.FC<ScheduleTableType> = ({
                         <TableHead>
                             <TableRow sx={{bgcolor: 'primary.main'}}>
                                 <TableCell sx={{minWidth: 250}}>
-                                    <IconButton onClick={sortedUsersFullNameClick} size="small">
-                                        <HeightIcon/>
-                                    </IconButton>
                                     Представители
                                 </TableCell>
                                 <TableCell></TableCell>

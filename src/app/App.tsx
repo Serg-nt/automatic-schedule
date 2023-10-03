@@ -29,8 +29,9 @@ function App() {
     return (
         <div className={classes.appContainer}>
             <h1 style={{textAlign: 'center'}}>Расписание на неделю</h1>
-
+            <p>Ссылка на телеграм-бот для управления расписанием:  <a href="https://t.me/WeeklySheduleBot">@WeeklySheduleBot</a></p>
             <Grid container sx={{ paddingBottom: "10px"}}>
+
                 <FormGroup>
                     <FormControlLabel control={
                         <Switch
@@ -46,9 +47,9 @@ function App() {
                 <AddUser addUser={addUser}/>
                 <Button sx={{height: '50px', margin: '10px 0 0 40px'}} variant="outlined" disabled>Распределить</Button>
                 <div>
-                    <p>B - необязательный выходной</p>
-                    <p>B* - обязательный выходной</p>
-                    <p>Р - рабочий день</p>
+                    <p style={{backgroundColor: '#98FB98'}}>B - необязательный выходной</p>
+                    <p style={{backgroundColor: '#66CDAA'}}>B* - обязательный выходной</p>
+                    <p style={{backgroundColor: '#c7e9ed'}}> Р - рабочий день</p>
                 </div>
             </Grid>
         </div>

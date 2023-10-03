@@ -12,14 +12,6 @@ const fetchUsers = createAppAsyncThunk<{ users: User[] }, void>(
     },
 );
 
-const fetchSortedUsers = createAppAsyncThunk<{ users: User[] }, number>(
-    "users/fetchSortedUsers",
-    async (sort) => {
-        const res = await usersApi.getSortedUsers(sort)
-        return {users: res.data}
-    },
-);
-
 const addUser = createAppAsyncThunk<User, string>(
     "users/addUser",
     async (fullName) => {
@@ -118,9 +110,6 @@ const slice = createSlice({
             .addCase(fetchUsers.fulfilled, (state, action) => {
                 return action.payload.users
             })
-            .addCase(fetchSortedUsers.fulfilled, (state, action) => {
-                return action.payload.users
-            })
             .addCase(addUser.fulfilled, (state, action) => {
                 state.push(action.payload)
             })
@@ -152,4 +141,4 @@ const slice = createSlice({
 export const usersReducer = slice.reducer;
 export const usersActions = {addUser, removeUser, setPersonalWeekend, setDefinedWeekend, setWeekend};
 // export const usersActions = slice.actions;
-export const usersThunks = { fetchUsers, fetchSortedUsers, addUser, removeUser, setPersonalWeekend, setDefinedWeekend, setWeekend }
+export const usersThunks = { fetchUsers, addUser, removeUser, setPersonalWeekend, setDefinedWeekend, setWeekend }

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {useSelector} from "react-redux";
 import {AppRootStateType} from "../../app/store";
 import {Date, User} from "../../interfaces/types";
@@ -11,7 +11,6 @@ type PropsType = {
 }
 
 export const SheduleTableContainer: React.FC<PropsType> = ({changeDaysOn}) => {
-    const [sort, setSort] = useState<boolean>(true)
 
     const usersList: User[] = useSelector((state: AppRootStateType) => state.users)
     const dispatch = useAppDispatch()
@@ -28,7 +27,6 @@ export const SheduleTableContainer: React.FC<PropsType> = ({changeDaysOn}) => {
         if (!user) return;
 
         if (changeDaysOn) {
-            // сетаем важные дни
             const newArrPersonalWeekends = !isPersonalWeekend
                 ? [...user.personalWeekends, day]
                 : user.personalWeekends.filter(elem => elem !== day.toString())
@@ -36,7 +34,7 @@ export const SheduleTableContainer: React.FC<PropsType> = ({changeDaysOn}) => {
             if (isDefinedWeekend) {
 
                 const newArrDefinedWeekends = user.definedWeekends.filter(elem => elem !== day.toString())
-                dispatch(usersThunks.setWeekend({user, newArrPersonalWeekends, newArrDefinedWeekends})) // ??? не проще ли сделать одну функцию универсальную
+                dispatch(usersThunks.setWeekend({user, newArrPersonalWeekends, newArrDefinedWeekends}))
 
             } else {
                 dispatch(usersThunks.setPersonalWeekend({user, newArrPersonalWeekends}))
@@ -45,7 +43,6 @@ export const SheduleTableContainer: React.FC<PropsType> = ({changeDaysOn}) => {
 
 
         } else {
-            // сетаем неважные дни
             if (!isPersonalWeekend) {
                 const newArrDefinedWeekends = isDefinedWeekend
                     ? user.definedWeekends.filter(elem => elem !== day.toString())
@@ -56,19 +53,11 @@ export const SheduleTableContainer: React.FC<PropsType> = ({changeDaysOn}) => {
 
     }
 
-    const sortedUsersFullNameClick = () => {
-        sort
-            ? dispatch(usersThunks.fetchSortedUsers(1))
-            : dispatch(usersThunks.fetchSortedUsers(-1))
-        setSort(!sort)
-    }
-
     return (
         <>
             <SheduleTable
                 usersList={usersList}
                 daysList={daysList}
-                sortedUsersFullNameClick={sortedUsersFullNameClick}
                 changeUserDayCellClick={changeUserDayCellClick}
                 removeUser={removeUser}
             />
